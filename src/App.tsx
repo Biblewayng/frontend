@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -38,10 +39,7 @@ const GivingPage = lazy(() => import('./pages/giving/GivingPage'))
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-      <p className="mt-4 text-sm text-gray-600">Loading...</p>
-    </div>
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
   </div>
 )
 
