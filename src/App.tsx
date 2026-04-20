@@ -6,6 +6,7 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { AuthProvider } from './context/AuthContext'
 import { PermissionProvider } from './context/PermissionContext'
 import { AuthStatusProvider, useAuthStatus } from './context/AuthStatusContext'
+import NetworkBanner from './components/NetworkBanner'
 import LandingPage from './pages/landing/LandingPage'
 import LoginPage from './pages/auth/LoginPage'
 import SignupPage from './pages/auth/SignupPage'
@@ -59,6 +60,7 @@ function App() {
         <AuthProvider>
           <PermissionProvider>
             <BrowserRouter>
+              <NetworkBanner />
               <Toaster richColors position="top-right" />
               <Suspense fallback={<LoadingFallback />}>
                 <Routes>
