@@ -144,13 +144,15 @@ export default function MemberDashboard() {
             <div className="flex items-center">
               <div className="text-xl sm:text-2xl font-bold text-blue-600" style={{ fontFamily: 'Pacifico, serif' }}>Bibleway</div>
             </div>
-            <div className="flex items-center space-x-2 sm:space-x-4">
+          <div className="flex items-center justify-center flex-1">
               {user?.role && user.role !== 'member' && (
-                <Link to="/dashboard" className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                <Link to="/dashboard" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
                   <i className="ri-dashboard-line"></i>
-                  Admin Dashboard
+                  Admin
                 </Link>
               )}
+            </div>
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="relative">
                 <button onClick={() => handleTabChange('notifications')}
                   className="p-2 text-gray-400 hover:text-gray-600 cursor-pointer relative">

@@ -80,11 +80,14 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
       <div className="h-6 w-px bg-gray-200 lg:hidden"></div>
 
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-        <div className="flex items-center gap-x-4 lg:gap-x-6 ml-auto">
-          <Link to="/member-dashboard" className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+        <div className="flex flex-1 items-center justify-center">
+          <Link to="/member-dashboard" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
             <i className="ri-user-line"></i>
-            Member View
+            <span>Member View</span>
           </Link>
+        </div>
+        <div className="flex items-center gap-x-4 lg:gap-x-6 ml-auto">
+          
           <div className="relative" ref={notifRef}>
             <button type="button"
               className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 cursor-pointer relative"
