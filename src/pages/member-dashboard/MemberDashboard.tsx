@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { formatTime as formatDuration } from '@/utils/time';
 import { elapsedSeconds } from '@/utils/date';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { useNotifications, UNREAD_COUNT_KEY } from '@/hooks/useNotifications';
 import { notificationsService } from '@/services/notifications.service';
@@ -145,6 +145,12 @@ export default function MemberDashboard() {
               <div className="text-xl sm:text-2xl font-bold text-blue-600" style={{ fontFamily: 'Pacifico, serif' }}>Bibleway</div>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
+              {user?.role && user.role !== 'member' && (
+                <Link to="/dashboard" className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                  <i className="ri-dashboard-line"></i>
+                  Admin Dashboard
+                </Link>
+              )}
               <div className="relative">
                 <button onClick={() => handleTabChange('notifications')}
                   className="p-2 text-gray-400 hover:text-gray-600 cursor-pointer relative">
