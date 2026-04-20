@@ -39,8 +39,8 @@ export default function SettingsPage() {
             </div>
 
             <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-              <div className="border-b border-gray-200">
-                <nav className="flex space-x-8 px-6" aria-label="Tabs">
+              <div className="border-b border-gray-200 overflow-x-auto">
+                <nav className="flex space-x-8 px-6 min-w-max" aria-label="Tabs">
                   {tabs.map((tab) => (
                     <button
                       key={tab.id}
