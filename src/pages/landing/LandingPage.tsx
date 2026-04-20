@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { Link } from "react-router-dom";
 import PublicNavbar from "@/components/layout/PublicNavbar";
 import PublicFooter from "@/components/layout/PublicFooter";
 import { usePublicContent } from "@/hooks/usePublicContent";
 import { useContent } from "@/hooks/useContent";
 import { useAuthStatus } from "@/context/AuthStatusContext";
+import { useAuth } from "@/context/AuthContext";
+import { useQuery } from "@tanstack/react-query";
+import { livestreamService } from "@/services/livestream.service";
 import type { ServiceTime } from "@/types";
 
 const PublicLivestreamPlayer = lazy(
@@ -15,6 +19,13 @@ export default function LandingPage() {
   const { content, loading } = usePublicContent();
   const { serviceTimes: services } = useContent();
   const { authStatus, loading: authLoading } = useAuthStatus();
+  const { user } = useAuth();
+  const { data: streamStatus } = useQuery({
+    queryKey: ['public-stream-status'],
+    queryFn: livestreamService.getPublicStatus,
+    enabled: !!user,
+  });
+  const isLive = (streamStatus as any)?.is_live ?? false;
 
   if (loading) {
     return (
@@ -48,13 +59,22 @@ export default function LandingPage() {
               dangerouslySetInnerHTML={{ __html: content.hero_subtitle }}
             ></div>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              {!authLoading && authStatus?.signup_enabled && (
-                <Link
-                  to="/signup"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold cursor-pointer whitespace-nowrap"
-                >
-                  Join Us
-                </Link>
+              {!authLoading && (
+                user ? (
+                  <Link
+                    to={isLive ? "/member-dashboard?tab=livestream" : "/member-dashboard"}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold cursor-pointer whitespace-nowrap"
+                  >
+                    {isLive ? "Join Service" : "Visit Dashboard"}
+                  </Link>
+                ) : authStatus?.signup_enabled && (
+                  <Link
+                    to="/signup"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold cursor-pointer whitespace-nowrap"
+                  >
+                    Join Us
+                  </Link>
+                )
               )}
               <a
                 href="#services"
