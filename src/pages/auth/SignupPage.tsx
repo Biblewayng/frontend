@@ -44,9 +44,8 @@ export default function SignupPage() {
     <div className="min-h-screen flex">
       <div className="hidden lg:flex flex-1 bg-blue-600 items-center justify-center p-12">
         <div className="text-white text-center">
-          <i className="ri-community-line text-8xl mb-6"></i>
-          <h2 className="text-4xl font-bold mb-4">Join Our Community</h2>
-          <p className="text-xl text-blue-100">Start your spiritual journey with Bibleway</p>
+          <h2 className="text-4xl font-bold mb-4">Welcome to Bibleway</h2>
+          <p className="text-xl text-blue-100">Sign up to get started</p>
         </div>
       </div>
 
