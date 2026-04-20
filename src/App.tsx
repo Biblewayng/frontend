@@ -69,22 +69,37 @@ function App() {
                 <Route path="/forms/:id" element={<PublicFormPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
-                <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+                <Route path="/dashboard" element={<Navigate to="/admin/dashboard" replace />} />
+                <Route path="/membership" element={<Navigate to="/admin/membership" replace />} />
+                <Route path="/sermons" element={<Navigate to="/admin/sermons" replace />} />
+                <Route path="/events" element={<Navigate to="/admin/events" replace />} />
+                <Route path="/live" element={<Navigate to="/admin/live" replace />} />
+                <Route path="/announcements" element={<Navigate to="/admin/announcements" replace />} />
+                <Route path="/forms" element={<Navigate to="/admin/forms" replace />} />
+                <Route path="/prayers" element={<Navigate to="/admin/prayers" replace />} />
+                <Route path="/users" element={<Navigate to="/admin/users" replace />} />
+                <Route path="/content" element={<Navigate to="/admin/content" replace />} />
+                <Route path="/email-templates" element={<Navigate to="/admin/email-templates" replace />} />
+                <Route path="/settings" element={<Navigate to="/admin/settings" replace />} />
+                <Route path="/profile" element={<Navigate to="/admin/profile" replace />} />
+                <Route path="/contact-messages" element={<Navigate to="/admin/contact-messages" replace />} />
+                <Route path="/giving" element={<Navigate to="/admin/giving" replace />} />
+                <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/member-dashboard" element={<ProtectedRoute><MemberDashboard /></ProtectedRoute>} />
-                <Route path="/membership" element={<ProtectedRoute requiredPermission="members.view"><MembershipPage /></ProtectedRoute>} />
-                <Route path="/sermons" element={<ProtectedRoute requiredPermission="sermons.view"><SermonsPage /></ProtectedRoute>} />
-                <Route path="/events" element={<ProtectedRoute requiredPermission="events.view"><EventsPage /></ProtectedRoute>} />
-                <Route path="/live" element={<ProtectedRoute requiredPermission="livestream.view"><LiveStreamPage /></ProtectedRoute>} />
-                <Route path="/announcements" element={<ProtectedRoute requiredPermission="announcements.view"><AnnouncementsPage /></ProtectedRoute>} />
-                <Route path="/forms" element={<ProtectedRoute requiredPermission="forms.view"><FormsPage /></ProtectedRoute>} />
-                <Route path="/prayers" element={<ProtectedRoute requiredPermission="prayers.view"><PrayersPage /></ProtectedRoute>} />
-                <Route path="/users" element={<ProtectedRoute requiredPermission="users.view"><UserManagementPage /></ProtectedRoute>} />
-                <Route path="/content" element={<ProtectedRoute requiredPermission="content.view"><ContentManagementPage /></ProtectedRoute>} />
-                <Route path="/email-templates" element={<ProtectedRoute requiredPermission="email_templates.view"><EmailTemplatesPage /></ProtectedRoute>} />
-                <Route path="/settings" element={<ProtectedRoute requiredPermission="settings.view"><SettingsPage /></ProtectedRoute>} />
-                <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-                <Route path="/contact-messages" element={<ProtectedRoute requiredPermission="contact.view"><ContactMessagesPage /></ProtectedRoute>} />
-                <Route path="/giving" element={<ProtectedRoute requiredPermission="giving.read"><GivingPage /></ProtectedRoute>} />
+                <Route path="/admin/membership" element={<ProtectedRoute requiredPermission="members.view"><MembershipPage /></ProtectedRoute>} />
+                <Route path="/admin/sermons" element={<ProtectedRoute requiredPermission="sermons.view"><SermonsPage /></ProtectedRoute>} />
+                <Route path="/admin/events" element={<ProtectedRoute requiredPermission="events.view"><EventsPage /></ProtectedRoute>} />
+                <Route path="/admin/live" element={<ProtectedRoute requiredPermission="livestream.view"><LiveStreamPage /></ProtectedRoute>} />
+                <Route path="/admin/announcements" element={<ProtectedRoute requiredPermission="announcements.view"><AnnouncementsPage /></ProtectedRoute>} />
+                <Route path="/admin/forms" element={<ProtectedRoute requiredPermission="forms.view"><FormsPage /></ProtectedRoute>} />
+                <Route path="/admin/prayers" element={<ProtectedRoute requiredPermission="prayers.view"><PrayersPage /></ProtectedRoute>} />
+                <Route path="/admin/users" element={<ProtectedRoute requiredPermission="users.view"><UserManagementPage /></ProtectedRoute>} />
+                <Route path="/admin/content" element={<ProtectedRoute requiredPermission="content.view"><ContentManagementPage /></ProtectedRoute>} />
+                <Route path="/admin/email-templates" element={<ProtectedRoute requiredPermission="email_templates.view"><EmailTemplatesPage /></ProtectedRoute>} />
+                <Route path="/admin/settings" element={<ProtectedRoute requiredPermission="settings.view"><SettingsPage /></ProtectedRoute>} />
+                <Route path="/admin/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                <Route path="/admin/contact-messages" element={<ProtectedRoute requiredPermission="contact.view"><ContactMessagesPage /></ProtectedRoute>} />
+                <Route path="/admin/giving" element={<ProtectedRoute requiredPermission="giving.read"><GivingPage /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
                 <Route path="/login" element={<AuthRouteWrapper path="/login" element={<LoginPage />} />} />
                 <Route path="/signup" element={<AuthRouteWrapper path="/signup" element={<SignupPage />} />} />

@@ -15,7 +15,7 @@ export default function LoginPage() {
   useEffect(() => {
     if (user) {
       if (['superadmin', 'admin', 'pastor', 'minister', 'staff'].includes(user.role)) {
-        navigate('/dashboard');
+        navigate('/admin/dashboard');
       } else {
         navigate('/member-dashboard');
       }

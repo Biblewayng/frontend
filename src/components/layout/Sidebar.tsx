@@ -7,21 +7,21 @@ interface SidebarProps {
 }
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: 'ri-dashboard-line', permission: null },
-  { name: 'Members', href: '/membership', icon: 'ri-team-line', permission: 'members.view' },
-  { name: 'Sermons', href: '/sermons', icon: 'ri-book-open-line', permission: 'sermons.view' },
-  { name: 'Events', href: '/events', icon: 'ri-calendar-line', permission: 'events.view' },
-  { name: 'Announcements', href: '/announcements', icon: 'ri-megaphone-line', permission: 'announcements.view' },
-  { name: 'Prayer Requests', href: '/prayers', icon: 'ri-heart-line', permission: 'prayers.view' },
-  { name: 'Giving', href: '/giving', icon: 'ri-hand-coin-line', permission: 'giving.read' },
-  { name: 'Forms', href: '/forms', icon: 'ri-file-list-3-line', permission: 'forms.view' },
-  { name: 'Live Stream', href: '/live', icon: 'ri-live-line', permission: 'livestream.view' },
-  { name: 'User Management', href: '/users', icon: 'ri-user-settings-line', permission: 'users.view' },
-  { name: 'Content Management', href: '/content', icon: 'ri-file-text-line', permission: 'content.view' },
-  { name: 'Email Templates', href: '/email-templates', icon: 'ri-mail-line', permission: 'email_templates.view' },
-  { name: 'Contact Messages', href: '/contact-messages', icon: 'ri-message-3-line', permission: 'contact.view' },
-  { name: 'Settings', href: '/settings', icon: 'ri-settings-3-line', permission: 'settings.view' },
-  { name: 'Profile', href: '/profile', icon: 'ri-user-line', permission: null },
+  { name: 'Dashboard', href: '/admin/dashboard', icon: 'ri-dashboard-line', permission: null },
+  { name: 'Members', href: '/admin/membership', icon: 'ri-team-line', permission: 'members.view' },
+  { name: 'Sermons', href: '/admin/sermons', icon: 'ri-book-open-line', permission: 'sermons.view' },
+  { name: 'Events', href: '/admin/events', icon: 'ri-calendar-line', permission: 'events.view' },
+  { name: 'Announcements', href: '/admin/announcements', icon: 'ri-megaphone-line', permission: 'announcements.view' },
+  { name: 'Prayer Requests', href: '/admin/prayers', icon: 'ri-heart-line', permission: 'prayers.view' },
+  { name: 'Giving', href: '/admin/giving', icon: 'ri-hand-coin-line', permission: 'giving.read' },
+  { name: 'Forms', href: '/admin/forms', icon: 'ri-file-list-3-line', permission: 'forms.view' },
+  { name: 'Live Stream', href: '/admin/live', icon: 'ri-live-line', permission: 'livestream.view' },
+  { name: 'User Management', href: '/admin/users', icon: 'ri-user-settings-line', permission: 'users.view' },
+  { name: 'Content Management', href: '/admin/content', icon: 'ri-file-text-line', permission: 'content.view' },
+  { name: 'Email Templates', href: '/admin/email-templates', icon: 'ri-mail-line', permission: 'email_templates.view' },
+  { name: 'Contact Messages', href: '/admin/contact-messages', icon: 'ri-message-3-line', permission: 'contact.view' },
+  { name: 'Settings', href: '/admin/settings', icon: 'ri-settings-3-line', permission: 'settings.view' },
+  { name: 'Profile', href: '/admin/profile', icon: 'ri-user-line', permission: null },
 ];
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
@@ -76,7 +76,7 @@ function SidebarContent() {
         <li>
           <ul className="-mx-2 space-y-1">
             {visibleNav.map((item) => {
-              const isActive = location.pathname === item.href;
+              const isActive = location.pathname === item.href || location.pathname.startsWith(item.href + '/');
               return (
                 <li key={item.name}>
                   <Link

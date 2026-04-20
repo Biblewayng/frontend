@@ -4,54 +4,12 @@ import { useDashboard } from '@/hooks/useDashboard';
 import wsClient from '@/services/LivestreamWebSocket';
 
 const quickActionsConfig = [
-  {
-    title: 'Membership Management',
-    description: 'Add, edit, and manage church members',
-    icon: 'ri-group-line',
-    href: '/membership',
-    color: 'bg-blue-500',
-    statsKey: 'members'
-  },
-  {
-    title: 'Sermon Library',
-    description: 'Upload, organize, and manage sermons',
-    icon: 'ri-book-open-line',
-    href: '/sermons',
-    color: 'bg-green-500',
-    statsKey: 'sermons'
-  },
-  {
-    title: 'Live Streaming',
-    description: 'Broadcast services to online congregation',
-    icon: 'ri-live-line',
-    href: '/live',
-    color: 'bg-red-500',
-    statsKey: 'livestream'
-  },
-  {
-    title: 'Event Management',
-    description: 'Plan and organize church events',
-    icon: 'ri-calendar-event-line',
-    href: '/events',
-    color: 'bg-purple-500',
-    statsKey: 'events'
-  },
-  {
-    title: 'Announcements',
-    description: 'Share important updates with congregation',
-    icon: 'ri-megaphone-line',
-    href: '/announcements',
-    color: 'bg-orange-500',
-    statsKey: 'announcements'
-  },
-  {
-    title: 'Forms Management',
-    description: 'Create and manage registration forms',
-    icon: 'ri-file-list-line',
-    href: '/forms',
-    color: 'bg-teal-500',
-    statsKey: 'forms'
-  }
+  { title: 'Membership Management', description: 'Add, edit, and manage church members', icon: 'ri-group-line', href: '/admin/membership', color: 'bg-blue-500', statsKey: 'members' },
+  { title: 'Sermon Library', description: 'Upload, organize, and manage sermons', icon: 'ri-book-open-line', href: '/admin/sermons', color: 'bg-green-500', statsKey: 'sermons' },
+  { title: 'Live Streaming', description: 'Broadcast services to online congregation', icon: 'ri-live-line', href: '/admin/live', color: 'bg-red-500', statsKey: 'livestream' },
+  { title: 'Event Management', description: 'Plan and organize church events', icon: 'ri-calendar-event-line', href: '/admin/events', color: 'bg-purple-500', statsKey: 'events' },
+  { title: 'Announcements', description: 'Share important updates with congregation', icon: 'ri-megaphone-line', href: '/admin/announcements', color: 'bg-orange-500', statsKey: 'announcements' },
+  { title: 'Forms Management', description: 'Create and manage registration forms', icon: 'ri-file-list-line', href: '/admin/forms', color: 'bg-teal-500', statsKey: 'forms' },
 ];
 
 export default function QuickAccessPanel() {
