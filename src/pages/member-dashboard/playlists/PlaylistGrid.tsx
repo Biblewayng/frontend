@@ -1,0 +1,275 @@
+import { useState } from 'react';
+import { formatDate } from '@/utils/date';
+import { toast } from 'sonner';
+import EditPlaylistModal from '@/components/modals/EditPlaylistModal';
+import ConfirmDialog from '@/components/modals/ConfirmDialog';
+import { usePlaylists } from '@/hooks/usePlaylists';
+import type { Playlist } from '@/types';
+import Pagination from '@/components/common/Pagination';
+
+interface PlaylistGridProps {
+  viewMode: 'grid' | 'list';
+  onRefresh?: () => void;
+  onCreateClick?: () => void;
+  filterType: 'my' | 'public';
+  currentUserId?: string;
+  onPlayPlaylist?: (sermons: any[]) => void;
+}
+
+export default function PlaylistGrid({ viewMode, onRefresh, onCreateClick, filterType, currentUserId, onPlayPlaylist }: PlaylistGridProps) {
+  const { playlists, loading, deletePlaylist, getPlaylist, page, totalPages, setPage } = usePlaylists();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<string | number | null>(null);
+  const [loadingPlaylist, setLoadingPlaylist] = useState<string | number | null>(null);
+
+  const filteredPlaylists = playlists.filter((playlist: Playlist) => {
+    if (filterType === 'my') {
+      return playlist.member_id === currentUserId;
+    } else {
+      return playlist.is_public && playlist.member_id !== currentUserId;
+    }
+  });
+
+  const playPlaylist = async (playlistId: string | number) => {
+    setLoadingPlaylist(playlistId);
+    try {
+      const playlist = await getPlaylist(playlistId);
+      if (playlist.sermons && playlist.sermons.length > 0) {
+        if (onPlayPlaylist) {
+          onPlayPlaylist(playlist.sermons);
+        }
+      } else {
+        toast.error('This playlist has no sermons');
+      }
+    } catch (error) {
+      console.error('Error loading playlist:', error);
+      toast.error('Failed to load playlist');
+    } finally {
+      setLoadingPlaylist(null);
+    }
+  };
+
+  const handleEdit = (id: string | number) => {
+    setSelectedPlaylist(id);
+    setShowEditModal(true);
+  };
+
+  const handleDelete = (id: string | number) => {
+    setSelectedPlaylist(id);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (selectedPlaylist) {
+      await deletePlaylist(selectedPlaylist);
+      setShowDeleteConfirm(false);
+      setSelectedPlaylist(null);
+      onRefresh?.();
+    }
+  };
+
+  if (loading) {
+    return <div className="text-center py-12 text-gray-500">Loading playlists...</div>;
+  }
+
+  if (viewMode === 'list') {
+    return (
+      <>
+        {filteredPlaylists.length === 0 ? (
+          <div className="text-center py-12">
+            <i className="ri-playlist-line text-gray-400 text-4xl mb-4"></i>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              {filterType === 'my' ? 'No playlists yet' : 'No public playlists available'}
+            </h3>
+            <p className="text-gray-500 mb-4">
+              {filterType === 'my' 
+                ? 'Create your first playlist to organize your favorite sermons.' 
+                : 'No other members have shared public playlists yet.'}
+            </p>
+            {filterType === 'my' && (
+              <button onClick={onCreateClick} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 cursor-pointer whitespace-nowrap">
+                Create Playlist
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+            <div className="divide-y divide-gray-200">
+              {filteredPlaylists.map((playlist: Playlist) => (
+                <div key={playlist.id} className="p-6 hover:bg-gray-50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4 flex-1">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i className="ri-playlist-line text-white text-2xl"></i>
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <h3 className="text-lg font-semibold text-gray-900 truncate">{playlist.name}</h3>
+                          {playlist.is_public && (
+                            <span className="inline-flex px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+                              Public
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">{playlist.description || 'No description'}</p>
+                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                          <span>{playlist.sermon_count || 0} sermons</span>
+                          <span>{playlist.plays || 0} plays</span>
+                          <span>Updated {formatDate(playlist.updated_at || '')}</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => playPlaylist(playlist.id)}
+                        disabled={loadingPlaylist === playlist.id}
+                        className="flex items-center px-3 py-1 rounded-md text-sm cursor-pointer whitespace-nowrap bg-blue-100 text-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {loadingPlaylist === playlist.id ? (
+                          <i className="ri-loader-4-line animate-spin mr-1"></i>
+                        ) : (
+                          <i className="ri-play-line mr-1"></i>
+                        )}
+                        Play
+                      </button>
+                      {playlist.member_id === currentUserId && (
+                        <>
+                          <button onClick={() => handleEdit(playlist.id)} className="p-2 text-gray-400 hover:text-blue-600 cursor-pointer">
+                            <i className="ri-edit-line"></i>
+                          </button>
+                          <button onClick={() => handleDelete(playlist.id)} className="p-2 text-gray-400 hover:text-red-600 cursor-pointer">
+                            <i className="ri-delete-bin-line"></i>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+      </>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {filteredPlaylists.map((playlist: Playlist) => (
+        <div key={playlist.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+          <div className="relative">
+            <div className="h-48 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500"></div>
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+              <button
+                onClick={() => playPlaylist(playlist.id)}
+                disabled={loadingPlaylist === playlist.id}
+                className="w-16 h-16 bg-white bg-opacity-20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-opacity-30 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingPlaylist === playlist.id ? (
+                  <i className="ri-loader-4-line animate-spin text-white text-3xl"></i>
+                ) : (
+                  <i className="ri-play-fill text-white text-3xl"></i>
+                )}
+              </button>
+            </div>
+            <div className="absolute top-4 right-4">
+              {playlist.is_public && (
+                <span className="inline-flex px-2 py-1 text-xs bg-white bg-opacity-20 text-white rounded-full backdrop-blur-sm">
+                  Public
+                </span>
+              )}
+            </div>
+            <div className="absolute bottom-4 left-4 right-4">
+              <div className="flex items-center text-white text-sm">
+                <i className="ri-music-line mr-1"></i>
+                {playlist.sermon_count || 0} sermons
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{playlist.name}</h3>
+            <p className="text-sm text-gray-600 mb-3">{playlist.description || 'No description'}</p>
+            
+            <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+              <span>Created {formatDate(playlist.created_at || '')}</span>
+              <span>{playlist.plays || 0} plays</span>
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => playPlaylist(playlist.id)}
+                disabled={loadingPlaylist === playlist.id}
+                className="flex items-center px-3 py-1 rounded-md text-sm cursor-pointer whitespace-nowrap bg-blue-100 text-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loadingPlaylist === playlist.id ? (
+                  <i className="ri-loader-4-line animate-spin mr-1"></i>
+                ) : (
+                  <i className="ri-play-line mr-1"></i>
+                )}
+                Play All
+              </button>
+              
+              <div className="flex items-center space-x-1">
+                {playlist.member_id === currentUserId && (
+                  <>
+                    <button onClick={() => handleEdit(playlist.id)} className="p-2 text-gray-400 hover:text-blue-600 cursor-pointer">
+                      <i className="ri-edit-line"></i>
+                    </button>
+                    <button onClick={() => handleDelete(playlist.id)} className="p-2 text-gray-400 hover:text-red-600 cursor-pointer">
+                      <i className="ri-delete-bin-line"></i>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+      
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        onClose={() => setShowDeleteConfirm(false)}
+        onConfirm={confirmDelete}
+        title="Delete Playlist"
+        message="Are you sure you want to delete this playlist? This action cannot be undone."
+        confirmText="Delete"
+        type="danger"
+      />
+
+      {selectedPlaylist && (
+        <EditPlaylistModal
+          isOpen={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          playlistId={selectedPlaylist}
+          onSuccess={onRefresh}
+        />
+      )}
+
+      {filteredPlaylists.length === 0 && !loading && (
+        <div className="col-span-full text-center py-12">
+          <i className="ri-playlist-line text-gray-400 text-4xl mb-4"></i>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            {filterType === 'my' ? 'No playlists yet' : 'No public playlists available'}
+          </h3>
+          <p className="text-gray-500 mb-4">
+            {filterType === 'my' 
+              ? 'Create your first playlist to organize your favorite sermons.' 
+              : 'No other members have shared public playlists yet.'}
+          </p>
+          {filterType === 'my' && (
+            <button onClick={onCreateClick} className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 cursor-pointer whitespace-nowrap">
+              Create Playlist
+            </button>
+          )}
+        </div>
+      )}
+
+      <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
+    </div>
+  );
+}
