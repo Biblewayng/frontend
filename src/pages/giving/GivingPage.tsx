@@ -45,7 +45,7 @@ export default function GivingPage() {
       header: () => (
         <span className="flex items-center gap-2">
           Amount
-          <button onClick={() => setShowAmount(v => !v)} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+          <button onClick={(e) => { e.stopPropagation(); setShowAmount(v => !v); }} className="text-gray-400 hover:text-gray-600 cursor-pointer">
             <i className={showAmount ? 'ri-eye-line' : 'ri-eye-off-line'}></i>
           </button>
         </span>
