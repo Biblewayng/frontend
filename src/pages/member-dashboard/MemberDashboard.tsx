@@ -33,7 +33,6 @@ const TABS = [
   { id: 'giving', label: 'Giving', icon: 'ri-hand-heart-line' },
   { id: 'prayer', label: 'Prayer Requests', icon: 'ri-heart-line' },
   { id: 'notifications', label: 'Notifications', icon: 'ri-notification-2-line' },
-  { id: 'profile', label: 'Profile', icon: 'ri-user-line' },
 ];
 
 
@@ -209,7 +208,6 @@ export default function MemberDashboard() {
             {activeTab === 'giving' && <Suspense fallback={<LoadingSpinner />}><MemberGiving /></Suspense>}
             {activeTab === 'prayer' && <Suspense fallback={<LoadingSpinner />}><MemberPrayer /></Suspense>}
             {activeTab === 'notifications' && <MemberNotifications />}
-            {activeTab === 'profile' && <MemberProfile />}
           </div>
         </div>
       </div>
