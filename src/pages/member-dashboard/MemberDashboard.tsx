@@ -12,7 +12,6 @@ import MemberOverview from './MemberOverview';
 import MemberSermons from './MemberSermons';
 import MemberLivestream from './MemberLivestream';
 import MemberNotifications from './MemberNotifications';
-import MemberProfile from './MemberProfile';
 import LivestreamWebSocket from '@/services/LivestreamWebSocket';
 
 const AudioPlayer = lazy(() => import('@/components/AudioPlayer'));
