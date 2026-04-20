@@ -17,7 +17,7 @@ interface GivingRecord {
   date: string;
 }
 
-const LIMIT = 20;
+const LIMIT = 15;
 
 export default function GivingPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
