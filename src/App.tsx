@@ -35,6 +35,7 @@ const ServicesPage = lazy(() => import('./pages/public/ServicesPage'))
 const ContactPage = lazy(() => import('./pages/public/ContactPage'))
 const ContactMessagesPage = lazy(() => import('./pages/contact/ContactMessagesPage'))
 const GivingPage = lazy(() => import('./pages/giving/GivingPage'))
+const PastorDashboard = lazy(() => import('./pages/pastor/PastorDashboard'))
 
 const LoadingFallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -86,6 +87,7 @@ function App() {
                 <Route path="/giving" element={<Navigate to="/admin/giving" replace />} />
                 <Route path="/admin/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/member-dashboard" element={<ProtectedRoute><MemberDashboard /></ProtectedRoute>} />
+                <Route path="/pastor/dashboard" element={<ProtectedRoute requiredRole="pastor"><PastorDashboard /></ProtectedRoute>} />
                 <Route path="/admin/membership" element={<ProtectedRoute requiredPermission="members.view"><MembershipPage /></ProtectedRoute>} />
                 <Route path="/admin/sermons" element={<ProtectedRoute requiredPermission="sermons.view"><SermonsPage /></ProtectedRoute>} />
                 <Route path="/admin/events" element={<ProtectedRoute requiredPermission="events.view"><EventsPage /></ProtectedRoute>} />
