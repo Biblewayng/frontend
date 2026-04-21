@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { livestreamService } from '@/services/livestream.service';
+import { LivestreamPlayerProvider } from '@/context/LivestreamPlayerContext';
 import StreamStats from '@/pages/live/StreamStats';
 
 const LiveStreamPlayer = lazy(() => import('@/components/livestream/LiveStreamPlayer'));
@@ -27,23 +28,25 @@ export default function PastorLivestream({ currentStream }: Props) {
   }, [currentStream?.id, isLive]);
 
   return (
-    <div className="space-y-6">
-      <StreamStats isLive={isLive} stats={stats} />
-      <Suspense fallback={<div className="animate-pulse bg-gray-200 h-48 rounded-lg" />}>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-          <div className="lg:col-span-2">
-            <LiveStreamPlayer
-              isLive={isLive}
-              title={currentStream?.title}
-              description={currentStream?.description}
-              startTime={currentStream?.start_time}
-            />
+    <LivestreamPlayerProvider streamId={currentStream?.id} streamUrl={currentStream?.stream_url} isLive={isLive}>
+      <div className="space-y-6">
+        <StreamStats isLive={isLive} stats={stats} />
+        <Suspense fallback={<div className="animate-pulse bg-gray-200 h-48 rounded-lg" />}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="lg:col-span-2">
+              <LiveStreamPlayer
+                isLive={isLive}
+                title={currentStream?.title}
+                description={currentStream?.description}
+                startTime={currentStream?.start_time}
+              />
+            </div>
+            <div>
+              <LiveStreamComments streamId={currentStream?.id ?? null} isLive={isLive} showDeleteButton={false} />
+            </div>
           </div>
-          <div>
-            <LiveStreamComments streamId={currentStream?.id ?? null} isLive={isLive} showDeleteButton={false} />
-          </div>
-        </div>
-      </Suspense>
-    </div>
+        </Suspense>
+      </div>
+    </LivestreamPlayerProvider>
   );
 }
