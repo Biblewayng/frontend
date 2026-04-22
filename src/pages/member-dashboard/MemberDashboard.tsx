@@ -144,17 +144,17 @@ export default function MemberDashboard() {
             </div>
           <div className="flex items-center justify-center flex-1 lg:hidden">
               {user?.role && user.role !== 'member' && (
-                <Link to="/admin/dashboard" className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
-                  <i className="ri-dashboard-line"></i>
-                  Admin
+                <Link to={user.role === 'pastor' ? '/pastor/dashboard' : '/admin/dashboard'} className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
+                  <i className={user.role === 'pastor' ? 'ri-user-star-line' : 'ri-dashboard-line'}></i>
+                  {user.role === 'pastor' ? 'Pastor' : 'Admin'}
                 </Link>
               )}
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
               {user?.role && user.role !== 'member' && (
-                <Link to="/admin/dashboard" className="hidden lg:flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
-                  <i className="ri-dashboard-line"></i>
-                  Admin
+                <Link to={user.role === 'pastor' ? '/pastor/dashboard' : '/admin/dashboard'} className="hidden lg:flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
+                  <i className={user.role === 'pastor' ? 'ri-user-star-line' : 'ri-dashboard-line'}></i>
+                  {user.role === 'pastor' ? 'Pastor' : 'Admin'}
                 </Link>
               )}
               <div className="relative">
