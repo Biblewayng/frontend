@@ -118,7 +118,8 @@ export default function MemberPrayer() {
           <>
             <div className="space-y-4">
               {othersRequests.map((request: any) => (
-                <div key={request.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                <div key={request.id} onClick={() => { setSelectedRequest(request); setShowDetailsModal(true); }}
+                  className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-blue-300 hover:shadow-sm transition-all">
                   <h5 className="font-medium text-gray-900 mb-1">{request.title}</h5>
                   <p className="text-sm text-gray-500">
                     by {request.member_name || 'Anonymous'} • {formatDate(request.created_at)}
