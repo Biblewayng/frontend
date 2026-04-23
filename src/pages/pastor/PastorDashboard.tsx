@@ -7,11 +7,13 @@ import LivestreamWebSocket from '@/services/LivestreamWebSocket';
 import PastorPrayers from './PastorPrayers';
 import PastorLivestream from './PastorLivestream';
 import PastorGiving from './PastorGiving';
+import PastorNotifications from './PastorNotifications';
 
 const TABS = [
   { id: 'prayers', label: 'Prayers', icon: 'ri-heart-line' },
   { id: 'livestream', label: 'Live Stream', icon: 'ri-live-line' },
   { id: 'giving', label: 'Giving', icon: 'ri-hand-coin-line' },
+  { id: 'notifications', label: 'Notifications', icon: 'ri-notification-2-line' },
 ];
 
 export default function PastorDashboard() {
@@ -92,6 +94,7 @@ export default function PastorDashboard() {
             {activeTab === 'prayers' && <PastorPrayers />}
             {activeTab === 'livestream' && <PastorLivestream currentStream={currentStream} />}
             {activeTab === 'giving' && <PastorGiving />}
+            {activeTab === 'notifications' && <PastorNotifications />}
           </div>
         </div>
       </div>
