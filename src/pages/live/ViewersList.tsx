@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getInitials, getAvatarColor } from '@/utils/avatar';
 import LivestreamWebSocket from '@/services/LivestreamWebSocket';
+import ViewMemberModal from '@/components/modals/ViewMemberModal';
 
 interface ViewersListProps {
   streamId: string | null;
@@ -23,6 +24,7 @@ export default function ViewersList({ streamId }: ViewersListProps) {
   const [selectedViewers, setSelectedViewers] = useState<Set<number>>(new Set());
   const [showBulkModal, setShowBulkModal] = useState<'disconnect' | 'ban' | null>(null);
   const [bulkNote, setBulkNote] = useState('');
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -102,7 +104,11 @@ export default function ViewersList({ streamId }: ViewersListProps) {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm font-medium text-gray-900">{viewer.name}</span>
+              <span
+                onClick={() => viewer.user_id && setSelectedMemberId(String(viewer.user_id))}
+                className={`text-sm font-medium text-gray-900 ${viewer.user_id ? 'cursor-pointer hover:text-blue-600' : ''}`}>
+                {viewer.name}
+              </span>
             </div>
             <div className="text-xs text-gray-500">{viewer.location || 'Online'}</div>
           </div>
@@ -280,6 +286,9 @@ export default function ViewersList({ streamId }: ViewersListProps) {
           </div>
         </div>
       </div>
+    )}
+    {selectedMemberId && (
+      <ViewMemberModal isOpen={true} onClose={() => setSelectedMemberId(null)} memberId={selectedMemberId} />
     )}
     </>
   );

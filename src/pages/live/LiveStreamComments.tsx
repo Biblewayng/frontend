@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { useLivestreamComments } from '@/hooks/useLivestreamComments';
 import { formatTime } from '@/utils/date';
+import ViewMemberModal from '@/components/modals/ViewMemberModal';
 
 interface Props {
   streamId: string | null;
@@ -18,6 +20,7 @@ function renderComment(text: string) {
 
 export default function LiveStreamComments({ streamId, isLive, showDeleteButton = false }: Props) {
   const { messages, newMessage, setNewMessage, sending, containerRef, inputRef, handleSend, handleDelete, mentionSuggestions, selectMention } = useLivestreamComments(streamId, isLive);
+  const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
 
   if (!isLive) {
     return (
@@ -29,6 +32,7 @@ export default function LiveStreamComments({ streamId, isLive, showDeleteButton 
   }
 
   return (
+    <>
     <div className="bg-white shadow-sm rounded-lg flex flex-col" style={{ height: '600px' }}>
       <div className="px-6 py-4 border-b border-gray-200">
         <h3 className="text-lg font-medium text-gray-900">Comments</h3>
@@ -43,7 +47,11 @@ export default function LiveStreamComments({ streamId, isLive, showDeleteButton 
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline space-x-2">
-                <span className="text-sm font-medium text-gray-900">{msg.user_name}</span>
+                <span
+                  onClick={() => msg.user_id && setSelectedMemberId(msg.user_id)}
+                  className={`text-sm font-medium text-gray-900 ${msg.user_id ? 'cursor-pointer hover:text-blue-600' : ''}`}>
+                  {msg.user_name}
+                </span>
                 <span className="text-xs text-gray-500">{formatTime(msg.created_at)}</span>
               </div>
               <p className="text-sm text-gray-700 break-words">{renderComment(msg.comment)}</p>
@@ -85,5 +93,9 @@ export default function LiveStreamComments({ streamId, isLive, showDeleteButton 
         </form>
       </div>
     </div>
+    {selectedMemberId && (
+      <ViewMemberModal isOpen={true} onClose={() => setSelectedMemberId(null)} memberId={selectedMemberId} />
+    )}
+  </>
   );
 }
