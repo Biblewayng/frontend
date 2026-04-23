@@ -7,8 +7,17 @@ interface Props {
   showDeleteButton?: boolean;
 }
 
+function renderComment(text: string) {
+  const parts = text.split(/(@\w[\w\s]*)/g);
+  return parts.map((part, i) =>
+    part.startsWith('@')
+      ? <span key={i} className="text-blue-600 font-medium">{part}</span>
+      : <span key={i}>{part}</span>
+  );
+}
+
 export default function LiveStreamComments({ streamId, isLive, showDeleteButton = false }: Props) {
-  const { messages, newMessage, setNewMessage, sending, containerRef, handleSend, handleDelete } = useLivestreamComments(streamId, isLive);
+  const { messages, newMessage, setNewMessage, sending, containerRef, inputRef, handleSend, handleDelete, mentionSuggestions, selectMention } = useLivestreamComments(streamId, isLive);
 
   if (!isLive) {
     return (
@@ -37,7 +46,7 @@ export default function LiveStreamComments({ streamId, isLive, showDeleteButton 
                 <span className="text-sm font-medium text-gray-900">{msg.user_name}</span>
                 <span className="text-xs text-gray-500">{formatTime(msg.created_at)}</span>
               </div>
-              <p className="text-sm text-gray-700 break-words">{msg.comment}</p>
+              <p className="text-sm text-gray-700 break-words">{renderComment(msg.comment)}</p>
             </div>
             {showDeleteButton && (
               <button onClick={() => handleDelete(msg.id)}
@@ -49,10 +58,24 @@ export default function LiveStreamComments({ streamId, isLive, showDeleteButton 
         ))}
       </div>
 
-      <div className="px-6 py-4 border-t border-gray-200">
+      <div className="px-6 py-4 border-t border-gray-200 relative">
+        {mentionSuggestions.length > 0 && (
+          <div className="absolute bottom-full left-6 right-6 mb-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-40 overflow-y-auto z-10">
+            {mentionSuggestions.map((v) => (
+              <button key={v.user_id} type="button"
+                onMouseDown={(e) => { e.preventDefault(); selectMention(v.name); }}
+                className="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 flex items-center gap-2">
+                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center shrink-0">
+                  <span className="text-xs font-semibold text-blue-600">{v.name.charAt(0).toUpperCase()}</span>
+                </div>
+                {v.name}
+              </button>
+            ))}
+          </div>
+        )}
         <form onSubmit={handleSend} className="flex space-x-2">
-          <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type a comment..."
+          <input ref={inputRef} type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
+            placeholder="Type a comment... use @ to mention"
             className="flex-1 px-3 py-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={sending} />
           <button type="submit" disabled={sending || !newMessage.trim()}
