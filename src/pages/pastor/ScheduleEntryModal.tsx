@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { ScheduleEntry, ScheduleCreate } from '@/types/pastor_schedule';
 
 interface Props {

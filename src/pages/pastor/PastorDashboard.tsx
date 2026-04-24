@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useNotifications, UNREAD_COUNT_KEY } from '@/hooks/useNotifications';
 import { notificationsService } from '@/services/notifications.service';
 import { livestreamService } from '@/services/livestream.service';
