@@ -8,12 +8,14 @@ import PastorPrayers from './PastorPrayers';
 import PastorLivestream from './PastorLivestream';
 import PastorGiving from './PastorGiving';
 import PastorNotifications from './PastorNotifications';
+import PastorCalendar from './PastorCalendar';
 
 const TABS = [
   { id: 'prayers', label: 'Prayers', icon: 'ri-heart-line' },
   { id: 'livestream', label: 'Live Stream', icon: 'ri-live-line' },
   { id: 'giving', label: 'Giving', icon: 'ri-hand-coin-line' },
   { id: 'notifications', label: 'Notifications', icon: 'ri-notification-2-line' },
+  { id: 'calendar', label: 'Calendar', icon: 'ri-calendar-line' },
 ];
 
 export default function PastorDashboard() {
@@ -95,6 +97,7 @@ export default function PastorDashboard() {
             {activeTab === 'livestream' && <PastorLivestream currentStream={currentStream} />}
             {activeTab === 'giving' && <PastorGiving />}
             {activeTab === 'notifications' && <PastorNotifications />}
+            {activeTab === 'calendar' && <PastorCalendar />}
           </div>
         </div>
       </div>
