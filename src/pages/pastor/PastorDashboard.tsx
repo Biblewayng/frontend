@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNotifications, UNREAD_COUNT_KEY } from '@/hooks/useNotifications';
+import { notificationsService } from '@/services/notifications.service';
 import { livestreamService } from '@/services/livestream.service';
 import LivestreamWebSocket from '@/services/LivestreamWebSocket';
 import PastorPrayers from './PastorPrayers';
@@ -22,6 +24,14 @@ export default function PastorDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  useNotifications();
+
+  const { data: unreadData } = useQuery({
+    queryKey: [UNREAD_COUNT_KEY],
+    queryFn: () => notificationsService.getUnreadCount(),
+    enabled: !!user?.id,
+  });
+  const unreadCount = (unreadData as any)?.count ?? 0;
   const tabFromUrl = searchParams.get('tab');
   const validTabs = TABS.map(t => t.id);
   const [activeTab, setActiveTab] = useState(validTabs.includes(tabFromUrl!) ? tabFromUrl! : 'prayers');
@@ -58,6 +68,14 @@ export default function PastorDashboard() {
           <div className="flex justify-between items-center h-16">
             <div className="text-xl sm:text-2xl font-bold text-blue-600" style={{ fontFamily: 'Pacifico, serif' }}>Bibleway</div>
             <div className="flex items-center gap-3">
+              <button onClick={() => handleTabChange('notifications')} className="relative p-2 text-gray-400 hover:text-gray-600">
+                <i className="ri-notification-2-line text-xl"></i>
+                {unreadCount > 0 && (
+                  <span className="absolute top-0 right-0 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
               <Link to="/member-dashboard" className="text-sm text-gray-500 hover:text-blue-600 transition-colors">
                 Member View
               </Link>
