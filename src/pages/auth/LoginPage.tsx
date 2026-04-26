@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
+import { getAuthError } from '@/utils/authError';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -32,7 +34,9 @@ export default function LoginPage() {
     try {
       await login(email, password);
     } catch (err: any) {
-      setError(err.message || 'Login failed');
+      const msg = getAuthError(err, 'Login failed. Please check your credentials.');
+      setError(msg);
+      toast.error(msg);
       setLoading(false);
     }
   };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { authService } from '@/services/auth.service';
 import { toast } from 'sonner';
+import { getAuthError } from '@/utils/authError';
 
 export default function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
@@ -37,7 +38,7 @@ export default function ResetPasswordPage() {
       toast.success('Password reset successful');
       navigate('/login');
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Failed to reset password');
+      toast.error(getAuthError(err, 'Failed to reset password'));
     } finally {
       setLoading(false);
     }

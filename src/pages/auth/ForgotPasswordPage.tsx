@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authService } from '@/services/auth.service';
 import { toast } from 'sonner';
+import { getAuthError } from '@/utils/authError';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ export default function ForgotPasswordPage() {
       setSuccess(true);
       toast.success('Password reset email sent');
     } catch (err: any) {
-      toast.error(err.response?.data?.detail || 'Failed to send reset email');
+      toast.error(getAuthError(err, 'Failed to send reset email'));
     } finally {
       setLoading(false);
     }

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
+import { getAuthError } from '@/utils/authError';
 
 export default function SignupPage() {
   const [name, setName] = useState('');
@@ -32,9 +34,12 @@ export default function SignupPage() {
       const first_name = nameParts[0] || '';
       const last_name = nameParts.slice(1).join(' ') || nameParts[0];
       await register(first_name, last_name, email, password, phone || undefined);
+      toast.success('Account created! Please verify your email.');
       navigate('/verify-email');
     } catch (err: any) {
-      setError(err.message || 'Registration failed');
+      const msg = getAuthError(err, 'Registration failed. Please try again.');
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
