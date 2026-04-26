@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
+import { toast } from 'sonner';
 import EditUserModal from '@/components/modals/EditUserModal';
 import ResetPasswordModal from '@/components/modals/ResetPasswordModal';
 import ConfirmDialog from '@/components/modals/ConfirmDialog';
@@ -31,7 +32,7 @@ export default function UserManagement() {
     search: searchTerm || undefined,
     role: selectedRole !== 'all' ? selectedRole : undefined,
   });
-  const { roles: rawRoles, getPermissions, updateRole } = useRoles();
+  const { roles: rawRoles, getPermissions, updateRole, createRole } = useRoles();
   const { data: rawStats } = useQuery({
     queryKey: ['user-stats'],
     queryFn: usersService.getStats,
@@ -103,11 +104,17 @@ export default function UserManagement() {
     }
   };
 
-  const handleAddRole = () => {
-    setShowAddRole(false);
-    setNewRole({ name: '', permissions: [] });
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
+  const handleAddRole = async () => {
+    if (!newRole.name.trim()) return;
+    try {
+      await createRole({ name: newRole.name.trim().toLowerCase().replace(/\s+/g, '_'), permissions: newRole.permissions });
+      setShowAddRole(false);
+      setNewRole({ name: '', permissions: [] });
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (err: any) {
+      toast.error(err?.detail || 'Failed to create role');
+    }
   };
 
   const columns = useMemo<ColumnDef<User>[]>(() => [

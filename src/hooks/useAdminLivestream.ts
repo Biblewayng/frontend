@@ -1,9 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
-import { livestreamService } from '@/services/livestream.service';
-import { useLivestream } from '@/hooks/useLivestream';
-import LivestreamWebSocket from '@/services/LivestreamWebSocket';
+import { useState, useEffect, useRef } from "react";
+import { livestreamService } from "@/services/livestream.service";
+import { useLivestream } from "@/hooks/useLivestream";
+import LivestreamWebSocket from "@/services/LivestreamWebSocket";
 
-const EMPTY_STATS = { current_viewers: 0, peak_viewers: 0, duration: 0, chat_messages: 0 };
+const EMPTY_STATS = {
+  current_viewers: 0,
+  peak_viewers: 0,
+  duration: 0,
+  chat_messages: 0,
+};
 
 export function useAdminLivestream() {
   const { getStreamHistory } = useLivestream();
@@ -17,23 +22,24 @@ export function useAdminLivestream() {
   const [historyPage, setHistoryPage] = useState(1);
   const [totalHistoryPages, setTotalHistoryPages] = useState(1);
   const [audioLevel, setAudioLevel] = useState(0);
-  const [icecastUrl, setIcecastUrl] = useState('');
+  const [icecastUrl, setIcecastUrl] = useState("");
   const [streamSettings, setStreamSettings] = useState({
-    title: 'Sunday Morning Service - Live Audio',
-    quality: 'high',
-    category: 'Sunday Service',
+    title: "Sunday Morning Service - Live Audio",
+    quality: "high",
+    category: "Sunday Service",
     autoRecord: true,
-    description: '',
-    isPublic: true
+    description: "",
+    isPublic: false,
   });
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
-    livestreamService.getStreamUrl()
+    livestreamService
+      .getStreamUrl()
       .then((url) => setIcecastUrl(url))
-      .catch(() => setIcecastUrl('http://localhost:8001/live'));
+      .catch(() => setIcecastUrl("http://localhost:8001/live"));
   }, []);
 
   useEffect(() => {
@@ -45,18 +51,21 @@ export function useAdminLivestream() {
   useEffect(() => {
     LivestreamWebSocket.connect(currentStreamId);
 
-    const unbindStats = LivestreamWebSocket.on('stats', (stats) => {
+    const unbindStats = LivestreamWebSocket.on("stats", (stats) => {
       setStreamStats(stats);
       setViewerCount(stats.current_viewers);
     });
 
-    const unbindStarted = LivestreamWebSocket.on('stream-started', (streamId) => {
-      setCurrentStreamId(streamId);
-      setIsLive(true);
-      setLoading(false);
-    });
+    const unbindStarted = LivestreamWebSocket.on(
+      "stream-started",
+      (streamId) => {
+        setCurrentStreamId(streamId);
+        setIsLive(true);
+        setLoading(false);
+      },
+    );
 
-    const unbindEnded = LivestreamWebSocket.on('stream-ended', () => {
+    const unbindEnded = LivestreamWebSocket.on("stream-ended", () => {
       setCurrentStreamId(null);
       setIsLive(false);
       setViewerCount(0);
@@ -65,11 +74,15 @@ export function useAdminLivestream() {
       loadStreamHistory(1);
     });
 
-    const unbindUpdated = LivestreamWebSocket.on('stream-updated', (data) => {
-      setStreamSettings(prev => ({ ...prev, title: data.title, description: data.description }));
+    const unbindUpdated = LivestreamWebSocket.on("stream-updated", (data) => {
+      setStreamSettings((prev) => ({
+        ...prev,
+        title: data.title,
+        description: data.description,
+      }));
     });
 
-    const unbindStatus = LivestreamWebSocket.on('stream-status', (data) => {
+    const unbindStatus = LivestreamWebSocket.on("stream-status", (data) => {
       if (!data.is_live) {
         setIsLive(false);
         setCurrentStreamId(null);
@@ -104,7 +117,7 @@ export function useAdminLivestream() {
     let cancelled = false;
 
     const audio = new Audio();
-    audio.crossOrigin = 'anonymous';
+    audio.crossOrigin = "anonymous";
     audio.src = icecastUrl;
     audioRef.current = audio;
 
@@ -137,8 +150,12 @@ export function useAdminLivestream() {
       cancelled = true;
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
       audio.pause();
-      audio.src = '';
-      try { source?.disconnect(); analyser?.disconnect(); ctx?.close(); } catch {}
+      audio.src = "";
+      try {
+        source?.disconnect();
+        analyser?.disconnect();
+        ctx?.close();
+      } catch {}
       setAudioLevel(0);
     };
   }, [isLive, icecastUrl]);
@@ -150,11 +167,11 @@ export function useAdminLivestream() {
         setIsLive(true);
         setViewerCount(stream.viewers || 0);
         setCurrentStreamId(stream.id);
-        setStreamSettings(prev => ({
+        setStreamSettings((prev) => ({
           ...prev,
           title: stream.title || prev.title,
           description: stream.description || prev.description,
-          isPublic: stream.is_public ?? true
+          isPublic: stream.is_public ?? true,
         }));
       } else {
         setIsLive(false);
@@ -178,12 +195,15 @@ export function useAdminLivestream() {
     setLoading(true);
     if (live) {
       LivestreamWebSocket.send({
-        type: 'stream-start',
+        type: "stream-start",
         title: streamSettings.title,
-        description: streamSettings.description
+        description: streamSettings.description,
       });
     } else if (currentStreamId) {
-      LivestreamWebSocket.send({ type: 'stream-stop', streamId: currentStreamId });
+      LivestreamWebSocket.send({
+        type: "stream-stop",
+        streamId: currentStreamId,
+      });
     } else {
       setLoading(false);
     }
@@ -192,11 +212,11 @@ export function useAdminLivestream() {
   const updateMetadata = () => {
     if (!currentStreamId) return;
     LivestreamWebSocket.send({
-      type: 'update-stream-title',
+      type: "update-stream-title",
       streamId: currentStreamId,
       title: streamSettings.title,
       description: streamSettings.description,
-      is_public: streamSettings.isPublic
+      is_public: streamSettings.isPublic,
     });
   };
 
@@ -205,9 +225,20 @@ export function useAdminLivestream() {
   };
 
   return {
-    isLive, loading, currentStreamId, viewerCount, streamStats,
-    streamHistory, historyPage, setHistoryPage, totalHistoryPages,
-    audioLevel, streamSettings, setStreamSettings,
-    handleToggleLive, updateMetadata, toggleMute
+    isLive,
+    loading,
+    currentStreamId,
+    viewerCount,
+    streamStats,
+    streamHistory,
+    historyPage,
+    setHistoryPage,
+    totalHistoryPages,
+    audioLevel,
+    streamSettings,
+    setStreamSettings,
+    handleToggleLive,
+    updateMetadata,
+    toggleMute,
   };
 }
