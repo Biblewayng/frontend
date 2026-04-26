@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { livestreamService } from '@/services/livestream.service';
+import LivestreamWebSocket from '@/services/LivestreamWebSocket';
 import { LivestreamPlayerProvider } from '@/context/LivestreamPlayerContext';
 import StreamStats from '@/pages/live/StreamStats';
 
@@ -17,15 +17,16 @@ export default function PastorLivestream({ currentStream }: Props) {
   const isLive = currentStream?.is_live || false;
 
   useEffect(() => {
-    if (!currentStream?.id || !isLive) return;
-    const load = () =>
-      livestreamService.getStats(currentStream.id)
-        .then((s: any) => setStats(s))
-        .catch(() => {});
-    load();
-    const interval = setInterval(load, 10000);
-    return () => clearInterval(interval);
-  }, [currentStream?.id, isLive]);
+    const unbind = LivestreamWebSocket.on('stats', (data: any) => {
+      setStats(prev => ({
+        current_viewers: data.current_viewers ?? prev.current_viewers,
+        peak_viewers: data.peak_viewers ?? prev.peak_viewers,
+        duration: data.duration ?? prev.duration,
+        chat_messages: data.chat_messages ?? prev.chat_messages,
+      }));
+    });
+    return () => unbind();
+  }, []);
 
   return (
     <LivestreamPlayerProvider streamId={currentStream?.id} streamUrl={currentStream?.stream_url} isLive={isLive}>
